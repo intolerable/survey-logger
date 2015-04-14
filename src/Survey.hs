@@ -13,11 +13,13 @@ import Web.Scotty.Trans
 import qualified Data.Map as Map
 import qualified Data.Text.Lazy as Lazy
 import Stitch.Render
+import Network.Wai.Middleware.RequestLogger
 
 main :: IO ()
 main = do
   csv <- readCSV
   scottyT 3000 (`runReaderT` csv) (`runReaderT` csv) $ do
+    middleware logStdoutDev
     get "/" $ do
       (header, _) <- lift ask
       lucid $ homepage header
