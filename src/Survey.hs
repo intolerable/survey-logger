@@ -23,6 +23,12 @@ main = do
     get "/" $ do
       (header, _) <- lift ask
       lucid $ homepage header
+    get "/row/:n" $ do
+      (hs, rs) <- lift ask
+      row <- param "n"
+      case tryNth row rs of
+        Just x -> lucid $ showRow hs x
+        Nothing -> next
     get "/rows" $ do
       rows <- params
       c <- lift ask

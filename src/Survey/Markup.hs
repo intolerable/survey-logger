@@ -6,12 +6,14 @@ import Survey.Utilities
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader
+import Data.Map (Map)
 import Data.Monoid
+import Data.Text (Text)
 import Lucid
 import Lucid.Html5
 import qualified Data.Map as Map
-import qualified Data.Text.Encoding as Text
 import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text
 
 homepage :: [FieldName] -> HTML
 homepage fields = withHeader $ do
@@ -37,10 +39,22 @@ showRows rows = withHeader $ do
   forM_ (allEntries `zip` [1..]) $ \(entries, n) -> do
     ul_ [id_ (tshow n)] $ do
       a_ [href_ ("#" <> tshow n)] $ "#"
+      " "
+      a_ [href_ ("/row/" <> tshow n)] $ "view entire response"
       forM_ entries $ \(rowName, e) -> do
         li_ $ do
           div_ [class_ "row_name"] $ toHtml rowName
           toHtml e
+
+showRow :: [FieldName] -> Map Text Text -> HTML
+showRow hs m = withHeader $ do
+  ul_ $ do
+    forM_ hs $ \h -> do
+      case Map.lookup h m of
+        Just x -> li_ $ do
+          div_ [class_ "row_name"] $ toHtml h
+          toHtml x
+        Nothing -> return ()
 
 withHeader :: Monad m => HtmlT m a -> HtmlT m a
 withHeader content = do

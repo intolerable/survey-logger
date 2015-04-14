@@ -40,3 +40,9 @@ readCSV = do
 
 tshow :: Show a => a -> Text
 tshow = Text.pack . show
+
+tryNth :: Int -> [a] -> Maybe a
+tryNth n _ | n <= 0 = Nothing
+tryNth 1 (x:_) = Just x
+tryNth _ [] = Nothing
+tryNth n (_:xs) = tryNth (n - 1) xs
