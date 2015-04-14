@@ -34,8 +34,9 @@ showRows rows = withHeader $ do
           return (rowName, e)
     return $ filter (all (not . Text.null . snd)) es
   toHtml $ "there are " <> tshow (length allEntries) <> " filled-in responses"
-  forM_ allEntries $ \entries -> do
-    ul_ $ do
+  forM_ (allEntries `zip` [1..]) $ \(entries, n) -> do
+    ul_ [id_ (tshow n)] $ do
+      a_ [href_ ("#" <> tshow n)] $ "#"
       forM_ entries $ \(rowName, e) -> do
         li_ $ do
           div_ [class_ "row_name"] $ toHtml rowName
