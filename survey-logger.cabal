@@ -38,3 +38,11 @@ library
   default-extensions:
     GeneralizedNewtypeDeriving
     OverloadedStrings
+
+executable survey-logger
+  build-depends:
+    base,
+    survey-logger
+  hs-source-dirs: ./
+  main-is: Main.hs
+  default-language: Haskell2010
