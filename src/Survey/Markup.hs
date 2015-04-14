@@ -17,7 +17,7 @@ homepage fields = withHeader $ do
   form_ [action_ "/rows"] $ do
     ul_ $ do
       forM_ fields $ \field -> do
-        ul_ $ do
+        li_ $ do
           input_ [type_ "checkbox", id_ field, name_ field]
           label_ [for_ field] $ toHtml field
       input_ [type_ "submit"]
@@ -26,19 +26,21 @@ showRows :: [FieldName] -> HtmlT (ReaderT CustomCSV Maybe) ()
 showRows rows = withHeader $ do
   (_, ms) <- lift ask
   forM_ ms $ \m -> do
-    entries <- forM rows $ \rowName ->
-      lift $ lift $ Map.lookup rowName m
-    when (all (not . Text.null) entries) $ do
+    entries <- forM rows $ \rowName -> do
+      e <- lift $ lift $ Map.lookup rowName m
+      return (rowName, e)
+    when (all (not . Text.null . snd) entries) $ do
       ul_ $ do
-        forM_ entries $ \e -> do
-          li_ $
+        forM_ entries $ \(rowName, e) -> do
+          li_ $ do
+            div_ [class_ "row_name"] $ toHtml rowName
             toHtml e
-      hr_ []
 
 withHeader :: Monad m => HtmlT m a -> HtmlT m a
 withHeader content = do
   doctype_
   head_ $ do
     title_ "survey"
+    link_ [type_ "text/css", rel_ "stylesheet", href_ "/style.css"]
   body_ $ do
     content

@@ -12,6 +12,7 @@ import Lucid
 import Web.Scotty.Trans
 import qualified Data.Map as Map
 import qualified Data.Text.Lazy as Lazy
+import Stitch.Render
 
 main :: IO ()
 main = do
@@ -27,4 +28,7 @@ main = do
       case runReaderT x c of
         Just x -> html x
         Nothing -> next
+    get "/style.css" $ do
+      setHeader "Content-Type" "text/css, charset=utf-8"
+      text $ toLazy $ renderCSSWith compressed style
 
