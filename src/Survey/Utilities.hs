@@ -37,3 +37,6 @@ readCSV = do
       let hdr' = fmap dec $ Vector.toList hdr
       let resps' = fmap (Map.mapKeysMonotonic dec . fmap dec) $ Vector.toList resps
       return (hdr', resps')
+
+tshow :: Show a => a -> Text
+tshow = Text.pack . show
