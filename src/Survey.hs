@@ -5,6 +5,7 @@ import Survey.Stylesheet
 import Survey.Types
 import Survey.Utilities
 
+import Control.Applicative
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader
 import Data.Text.Encoding as Text
@@ -14,6 +15,7 @@ import qualified Data.Map as Map
 import qualified Data.Text.Lazy as Lazy
 import Stitch.Render
 import Network.Wai.Middleware.RequestLogger
+import Data.Maybe
 
 main :: IO ()
 main = do
@@ -30,9 +32,10 @@ main = do
         Just x -> lucid $ showRow hs x
         Nothing -> next
     get "/rows" $ do
-      rows <- params
+      rows <- filter (not . (=="all") . fst) <$> params
+      a <- lookup "all" <$> params
       c <- lift ask
-      let x = renderTextT $ showRows $ map (fromLazy . fst) $ filter ((=="on") . snd) rows
+      let x = renderTextT $ showRows (isJust a) $ map (fromLazy . fst) $ filter ((=="on") . snd) rows
       case runReaderT x c of
         Just x -> html x
         Nothing -> next
