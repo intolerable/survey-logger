@@ -23,7 +23,7 @@ library
     Survey.Types
     Survey.Utilities
   build-depends:
-    base >=4.7 && <4.8,
+    base >=4.7 && <4.9,
     bytestring,
     cassava,
     containers,
